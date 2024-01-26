@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
+const helmet = require('helmet');
 const auth = require('./middlewares/auth');
 const cors = require('./middlewares/cors');
 const errorHandler = require('./middlewares/errorHandler');
@@ -9,9 +10,8 @@ const { createUser, login } = require('./controllers/users');
 const { signInValidation, signUpValidation } = require('./middlewares/validations');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const router = require('./routes');
-const { DB_ADRESS } = require('./config');
+const { PORT, DB_ADRESS } = require('./utils/constants');
 
-const { PORT = 3001 } = process.env;
 const app = express();
 
 app.use(express.json());
@@ -23,6 +23,7 @@ app.use(requestLogger);
 app.post('/signin', signInValidation, login);
 app.post('/signup', signUpValidation, createUser);
 
+app.use(helmet());
 app.use(auth);
 app.use(router);
 

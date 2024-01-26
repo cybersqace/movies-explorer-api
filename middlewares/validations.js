@@ -11,14 +11,7 @@ const signInValidation = celebrate({
 
 const signUpValidation = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().custom((value) => {
-      if (!validator.isURL(value, { require_protocol: true })) {
-        throw new BadRequest('Некорректный URL адрес');
-      }
-      return value;
-    }),
+    name: Joi.string().required().min(2).max(30),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
@@ -27,7 +20,7 @@ const signUpValidation = celebrate({
 const updateUserValidation = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
-    about: Joi.string().min(2).max(30).required(),
+    email: Joi.string().required().email(),
   }),
 });
 

@@ -5,7 +5,7 @@ const NotFound = require('../errors/NotFound');
 const BadRequest = require('../errors/BadRequest');
 const Conflict = require('../errors/Conflict');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET } = require('../utils/constants');
 
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
@@ -51,6 +51,8 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new BadRequest('Переданы некорректные данные'));
+      } if (err.code === 11000) {
+        return next(new Conflict('Пользователь с таким e-mail уже зарегистрирован'));
       }
       return next(err);
     });
